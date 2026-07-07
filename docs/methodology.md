@@ -69,6 +69,20 @@ cost = max(abs(traded_notional) * (commission_bps + slippage_bps) / 10000, minim
 
 This is intentionally transparent. It can be replaced with broker-specific, asset-specific, spread-aware, or market-impact-aware models.
 
+## Portfolio Construction
+
+The portfolio construction module includes sample covariance, Ledoit-Wolf shrinkage covariance, and exponentially weighted covariance estimators. Shrinkage is useful when the asset universe is large relative to the observation window because sample covariance matrices can be noisy and unstable.
+
+The optimization module includes minimum variance, mean-variance utility, and equal-risk-contribution risk parity. These optimizers are baseline institutional allocation tools rather than full production optimizers. They make constraints explicit and return transparent weights that can be inspected, stress-tested, and backtested.
+
+## Factor Risk
+
+The factor model estimates linear exposures of assets to return factors using OLS. Estimated betas, residual volatility, and R-squared can be used to decompose portfolio variance into systematic and idiosyncratic components.
+
+## Stress Testing And Simulation
+
+Stress tests apply deterministic asset shocks to portfolio weights to estimate scenario loss. Monte Carlo simulation uses expected returns, covariance, and weights to generate a distribution of terminal wealth paths. Both tools are useful complements to historical backtests because they ask how a portfolio behaves outside a single realized path.
+
 ## Common Backtesting Biases
 
 The examples explicitly avoid same-close lookahead by shifting signals before execution. Other important risks include survivorship bias, stale constituents, data snooping, overfitting, corporate-action errors, omitted borrow fees, short-sale constraints, market impact, and unrealistic liquidity assumptions.

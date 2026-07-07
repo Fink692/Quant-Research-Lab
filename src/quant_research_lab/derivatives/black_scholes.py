@@ -28,9 +28,10 @@ def d1_d2(
         raise ValueError("spot and strike must be positive.")
     if time_to_expiry <= 0 or volatility <= 0:
         raise ValueError("time_to_expiry and volatility must be positive.")
-    numerator = math.log(spot / strike) + (
-        risk_free_rate - dividend_yield + 0.5 * volatility**2
-    ) * time_to_expiry
+    numerator = (
+        math.log(spot / strike)
+        + (risk_free_rate - dividend_yield + 0.5 * volatility**2) * time_to_expiry
+    )
     denominator = volatility * math.sqrt(time_to_expiry)
     d1 = numerator / denominator
     return d1, d1 - denominator

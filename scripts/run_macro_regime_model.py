@@ -27,7 +27,11 @@ from quant_research_lab.macro.regime_detection import (
 )
 from quant_research_lab.utils.config import ensure_directories, load_yaml
 from quant_research_lab.utils.logging import log_path, setup_logging
-from quant_research_lab.visualization.charts import save_heatmap, save_pca_scatter, save_regime_timeline
+from quant_research_lab.visualization.charts import (
+    save_heatmap,
+    save_pca_scatter,
+    save_regime_timeline,
+)
 from quant_research_lab.visualization.reports import save_dataframe, write_markdown_report
 
 
@@ -53,7 +57,9 @@ def main() -> None:
     ensure_directories("outputs/figures", "outputs/reports")
     cfg = load_yaml("configs/macro.yaml")["macro"]
     fred = FredClient()
-    raw_macro = fred.fetch_dataset(cfg["fred_series"], start=cfg["start_date"], end=cfg.get("end_date"))
+    raw_macro = fred.fetch_dataset(
+        cfg["fred_series"], start=cfg["start_date"], end=cfg.get("end_date")
+    )
     features = build_macro_features(raw_macro)
     standardized = standardize_features(features)
     regimes, pca, _ = detect_regimes(
@@ -64,7 +70,9 @@ def main() -> None:
     )
     labels = label_regimes(regimes, features)
     regime_history = features.join(regimes).join(labels)
-    prices = download_prices(cfg["asset_universe"], start=str(features.index.min().date()), end=cfg.get("end_date"))
+    prices = download_prices(
+        cfg["asset_universe"], start=str(features.index.min().date()), end=cfg.get("end_date")
+    )
     returns_by_regime = asset_returns_by_regime(prices, labels)
     transitions = transition_matrix(labels)
 
@@ -83,7 +91,12 @@ def main() -> None:
         "Average Macro Features by Regime",
     )
     save_heatmap(transitions, figures / "macro_transition_matrix.png", "Regime Transition Matrix")
-    save_heatmap(returns_by_regime, figures / "macro_asset_returns_by_regime.png", "Average Monthly Asset Returns by Regime", fmt=".2%")
+    save_heatmap(
+        returns_by_regime,
+        figures / "macro_asset_returns_by_regime.png",
+        "Average Monthly Asset Returns by Regime",
+        fmt=".2%",
+    )
     report_path = write_markdown_report(
         "Macro Regime Detection Model",
         {

@@ -1,5 +1,12 @@
 # Quant Research Lab
 
+[![CI](https://github.com/Fink692/Quant-Research-Lab/actions/workflows/ci.yml/badge.svg)](https://github.com/Fink692/Quant-Research-Lab/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.11%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Code Style](https://img.shields.io/badge/code%20style-black-000000)
+![Lint](https://img.shields.io/badge/lint-ruff-red)
+[![Docs](https://github.com/Fink692/Quant-Research-Lab/actions/workflows/docs.yml/badge.svg)](https://github.com/Fink692/Quant-Research-Lab/actions/workflows/docs.yml)
+
 Quant Research Lab is a local Python research framework for institutional-style portfolio analytics, statistical arbitrage, macro regime research, options volatility analysis, and transaction-cost-aware backtesting.
 
 This is structured as a package-style repository rather than a notebook dump. The modules are reusable from scripts, tests, notebooks, VS Code, PyCharm, or an installed Python environment.
@@ -45,6 +52,16 @@ For editable package development:
 pip install -e .
 ```
 
+Development tooling:
+
+```bash
+pip install -r requirements-dev.txt
+pre-commit install
+ruff check src tests scripts
+black --check src tests scripts
+mypy src --ignore-missing-imports
+```
+
 ## Local Setup
 
 Copy `.env.example` to `.env` if you have optional API keys:
@@ -64,6 +81,16 @@ python scripts/run_macro_regime_model.py
 python scripts/run_vol_surface.py
 python scripts/run_backtest.py
 pytest
+```
+
+After `pip install -e .`, the same workflows are available as console commands:
+
+```bash
+qrl-risk
+qrl-pairs
+qrl-macro
+qrl-vol
+qrl-backtest
 ```
 
 Outputs are written to:
@@ -96,6 +123,24 @@ Loads options chains from yfinance or manual CSV, cleans quotes, computes Black-
 
 Tracks cash, holdings, target weights, transaction costs, slippage, turnover, exposure, drawdowns, and benchmark-relative performance. Includes buy-and-hold, momentum rotation, and pairs trading examples. Signals are shifted before execution to avoid same-close lookahead bias.
 
+## Professional Tooling
+
+The repository includes GitHub Actions CI, `ruff`, `black`, `mypy`, `pre-commit`, a Dockerfile, a VS Code dev container, package console commands, MkDocs documentation, and tracked example images for README/docs presentation.
+
+## Additional Institutional Research Modules
+
+The professionalization pass adds:
+
+- Ledoit-Wolf covariance shrinkage and exponentially weighted covariance
+- Minimum-variance, mean-variance, and risk-parity portfolio optimization
+- Linear factor risk model estimation
+- EWMA volatility and correlation
+- Historical VaR/CVaR tail-risk reports
+- Deterministic stress testing
+- Monte Carlo portfolio path simulation
+- Regime-aware allocation helpers
+- Order/fill objects, rebalance calendars, position constraints, walk-forward splits, parameter sweeps, borrow costs, and cash financing hooks for backtesting
+
 ## Data Sources
 
 - Yahoo Finance through `yfinance`
@@ -119,6 +164,12 @@ Portfolio analytics use geometric compounding, annualized volatility, drawdown f
 - IV smile, term structure, 3D surface, Greeks chart
 - Strategy comparison table and monthly returns heatmap
 
+Selected tracked examples are available in `docs/assets/` and on the MkDocs site:
+
+![Backtest equity curves](docs/assets/backtest_equity_curves.png)
+
+![Implied volatility surface](docs/assets/options_3d_iv_surface.png)
+
 ## Limitations And Assumptions
 
 Free market data can contain survivorship bias, stale quotes, adjusted-price quirks, missing delistings, and delayed data. Transaction costs are simplified bps assumptions, not broker-specific fills. Options surfaces depend heavily on quote quality. Macro regimes are descriptive research tools, not causal forecasts. See `docs/limitations.md` and `docs/assumptions.md`.
@@ -127,11 +178,9 @@ Free market data can contain survivorship bias, stale quotes, adjusted-price qui
 
 - Add broker-grade corporate action handling
 - Add event-driven intraday backtesting
-- Add hidden Markov model regime detection
-- Add portfolio optimization and risk budgeting
 - Add richer options no-arbitrage checks
 - Add Polygon/Alpha Vantage adapters
-- Add CI workflow and coverage reporting
+- Add live data adapters behind a strict research/production boundary
 
 ## Disclaimer
 

@@ -136,14 +136,18 @@ def rolling_sharpe(
     return excess.rolling(window).mean() / returns.rolling(window).std() * np.sqrt(periods_per_year)
 
 
-def rolling_beta(asset_returns: pd.Series, benchmark_returns: pd.Series, window: int = 63) -> pd.Series:
+def rolling_beta(
+    asset_returns: pd.Series, benchmark_returns: pd.Series, window: int = 63
+) -> pd.Series:
     """Calculate rolling beta versus a benchmark."""
     covariance = asset_returns.rolling(window).cov(benchmark_returns)
     variance = benchmark_returns.rolling(window).var()
     return covariance / variance
 
 
-def rolling_correlation(asset_returns: pd.Series, benchmark_returns: pd.Series, window: int = 63) -> pd.Series:
+def rolling_correlation(
+    asset_returns: pd.Series, benchmark_returns: pd.Series, window: int = 63
+) -> pd.Series:
     """Calculate rolling correlation versus a benchmark."""
     return asset_returns.rolling(window).corr(benchmark_returns)
 
@@ -162,7 +166,9 @@ def performance_summary(
         "sortino_ratio": sortino_ratio(returns, risk_free_rate, periods_per_year),
         "max_drawdown": max_drawdown(returns, input_is_returns=True),
         "calmar_ratio": calmar_ratio(returns, periods_per_year),
-        "ending_value_1usd": equity_curve(returns, 1.0).iloc[-1] if not returns.dropna().empty else np.nan,
+        "ending_value_1usd": (
+            equity_curve(returns, 1.0).iloc[-1] if not returns.dropna().empty else np.nan
+        ),
     }
     if benchmark_returns is not None:
         summary["beta"] = beta_to_benchmark(returns, benchmark_returns)

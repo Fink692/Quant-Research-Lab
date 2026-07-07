@@ -52,7 +52,9 @@ def vega(
 ) -> float:
     """Calculate Black-Scholes vega for a 1.00 volatility point change."""
     d1, _ = d1_d2(spot, strike, time_to_expiry, risk_free_rate, volatility, dividend_yield)
-    return float(spot * math.exp(-dividend_yield * time_to_expiry) * norm.pdf(d1) * math.sqrt(time_to_expiry))
+    return float(
+        spot * math.exp(-dividend_yield * time_to_expiry) * norm.pdf(d1) * math.sqrt(time_to_expiry)
+    )
 
 
 def theta(
@@ -98,7 +100,9 @@ def rho(
     if opt == "c":
         value = strike * time_to_expiry * math.exp(-risk_free_rate * time_to_expiry) * norm.cdf(d2)
     else:
-        value = -strike * time_to_expiry * math.exp(-risk_free_rate * time_to_expiry) * norm.cdf(-d2)
+        value = (
+            -strike * time_to_expiry * math.exp(-risk_free_rate * time_to_expiry) * norm.cdf(-d2)
+        )
     return float(value)
 
 
@@ -113,9 +117,15 @@ def greeks(
 ) -> dict[str, float]:
     """Return all primary Black-Scholes Greeks."""
     return {
-        "delta": delta(spot, strike, time_to_expiry, risk_free_rate, volatility, option_type, dividend_yield),
+        "delta": delta(
+            spot, strike, time_to_expiry, risk_free_rate, volatility, option_type, dividend_yield
+        ),
         "gamma": gamma(spot, strike, time_to_expiry, risk_free_rate, volatility, dividend_yield),
-        "theta": theta(spot, strike, time_to_expiry, risk_free_rate, volatility, option_type, dividend_yield),
+        "theta": theta(
+            spot, strike, time_to_expiry, risk_free_rate, volatility, option_type, dividend_yield
+        ),
         "vega": vega(spot, strike, time_to_expiry, risk_free_rate, volatility, dividend_yield),
-        "rho": rho(spot, strike, time_to_expiry, risk_free_rate, volatility, option_type, dividend_yield),
+        "rho": rho(
+            spot, strike, time_to_expiry, risk_free_rate, volatility, option_type, dividend_yield
+        ),
     }

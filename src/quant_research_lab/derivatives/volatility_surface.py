@@ -25,7 +25,9 @@ def clean_options_chain(
     valuation = pd.Timestamp(valuation_date or date.today().isoformat()).normalize()
     frame["expiration"] = pd.to_datetime(frame["expiration"], errors="coerce")
     frame["days_to_expiry"] = (frame["expiration"] - valuation).dt.days
-    frame["mid"] = (pd.to_numeric(frame["bid"], errors="coerce") + pd.to_numeric(frame["ask"], errors="coerce")) / 2
+    frame["mid"] = (
+        pd.to_numeric(frame["bid"], errors="coerce") + pd.to_numeric(frame["ask"], errors="coerce")
+    ) / 2
     frame["option_type"] = frame["option_type"].str.lower().str[0]
     filters = (
         frame["expiration"].notna()
@@ -34,11 +36,17 @@ def clean_options_chain(
         & frame["ask"].gt(frame["bid"])
         & frame["mid"].gt(0)
         & frame["days_to_expiry"].between(min_days_to_expiry, max_days_to_expiry)
-        & frame.get("open_interest", pd.Series(0, index=frame.index)).fillna(0).ge(min_open_interest)
+        & frame.get("open_interest", pd.Series(0, index=frame.index))
+        .fillna(0)
+        .ge(min_open_interest)
         & frame.get("volume", pd.Series(0, index=frame.index)).fillna(0).ge(min_volume)
         & frame["option_type"].isin(["c", "p"])
     )
-    return frame.loc[filters].sort_values(["expiration", "option_type", "strike"]).reset_index(drop=True)
+    return (
+        frame.loc[filters]
+        .sort_values(["expiration", "option_type", "strike"])
+        .reset_index(drop=True)
+    )
 
 
 def enrich_options_chain(
@@ -94,7 +102,9 @@ def enrich_options_chain(
     frame["implied_volatility"] = ivs
     frame["theoretical_price"] = theoretical
     greeks_frame = pd.DataFrame(greek_rows)
-    return pd.concat([frame.reset_index(drop=True), greeks_frame], axis=1).dropna(subset=["implied_volatility"])
+    return pd.concat([frame.reset_index(drop=True), greeks_frame], axis=1).dropna(
+        subset=["implied_volatility"]
+    )
 
 
 def iv_smile_by_expiration(options: pd.DataFrame) -> pd.DataFrame:
@@ -107,7 +117,11 @@ def iv_smile_by_expiration(options: pd.DataFrame) -> pd.DataFrame:
 def iv_term_structure(options: pd.DataFrame) -> pd.DataFrame:
     """Calculate ATM implied volatility term structure by expiration."""
     frame = options.assign(atm_distance=(options["moneyness"] - 1.0).abs())
-    atm = frame.sort_values("atm_distance").groupby(["expiration", "option_type"], as_index=False).head(5)
+    atm = (
+        frame.sort_values("atm_distance")
+        .groupby(["expiration", "option_type"], as_index=False)
+        .head(5)
+    )
     return (
         atm.groupby(["expiration", "option_type"], as_index=False)["implied_volatility"]
         .mean()
@@ -133,7 +147,11 @@ def build_surface_grid(
     x_grid = np.linspace(np.nanpercentile(x, 5), np.nanpercentile(x, 95), grid_size)
     y_grid = np.linspace(np.nanpercentile(y, 5), np.nanpercentile(y, 95), grid_size)
     xx, yy = np.meshgrid(x_grid, y_grid)
-    zz = griddata((x, y), z, (xx, yy), method="linear")
+    method = "linear" if len(np.unique(x)) > 1 and len(np.unique(y)) > 1 else "nearest"
+    try:
+        zz = griddata((x, y), z, (xx, yy), method=method)
+    except Exception:
+        zz = griddata((x, y), z, (xx, yy), method="nearest")
     if np.isnan(zz).any():
         nearest = griddata((x, y), z, (xx, yy), method="nearest")
         zz = np.where(np.isnan(zz), nearest, zz)

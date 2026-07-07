@@ -5,7 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from itertools import combinations
 
-import numpy as np
 import pandas as pd
 from scipy import stats
 from statsmodels.tsa.stattools import coint
@@ -62,7 +61,9 @@ def find_cointegrated_pairs(prices: pd.DataFrame, min_observations: int = 252) -
     return pd.DataFrame(results).sort_values("p_value").reset_index(drop=True)
 
 
-def build_spread(y: pd.Series, x: pd.Series, hedge_ratio: float, intercept: float = 0.0) -> pd.Series:
+def build_spread(
+    y: pd.Series, x: pd.Series, hedge_ratio: float, intercept: float = 0.0
+) -> pd.Series:
     """Construct the stationary spread implied by the hedge ratio."""
     spread = y - (intercept + hedge_ratio * x)
     spread.name = "spread"

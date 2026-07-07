@@ -50,7 +50,11 @@ def main() -> None:
         initial_cash=float(cfg["initial_cash"]),
         cost_model=cost_model,
         max_gross_exposure=float(cfg["max_gross_exposure"]),
+        max_single_position=float(cfg.get("max_single_position", 1.0)),
         risk_free_rate=float(cfg["risk_free_rate"]),
+        cash_rate=float(cfg.get("cash_rate", 0.0)),
+        debit_rate=float(cfg.get("debit_rate", 0.0)),
+        short_borrow_rate=float(cfg.get("short_borrow_rate", 0.0)),
     )
 
     buy_hold = buy_and_hold_weights(prices, strategies["buy_and_hold"]["ticker"])
@@ -73,8 +77,12 @@ def main() -> None:
 
     results = {
         "buy_and_hold": engine.run("buy_and_hold", buy_hold, benchmark_returns=benchmark_returns),
-        "momentum_rotation": engine.run("momentum_rotation", momentum, benchmark_returns=benchmark_returns),
-        "pairs_trading": engine.run("pairs_trading", pair_weights, benchmark_returns=benchmark_returns),
+        "momentum_rotation": engine.run(
+            "momentum_rotation", momentum, benchmark_returns=benchmark_returns
+        ),
+        "pairs_trading": engine.run(
+            "pairs_trading", pair_weights, benchmark_returns=benchmark_returns
+        ),
     }
     comparison = strategy_comparison({name: result.metrics for name, result in results.items()})
 
@@ -90,16 +98,33 @@ def main() -> None:
     save_dataframe(returns_frame, backtests / "backtest_daily_returns.csv")
     save_dataframe(turnover_frame, backtests / "backtest_turnover.csv")
     save_dataframe(exposure_frame, backtests / "backtest_exposure.csv")
-    save_line_chart(equity_frame, figures / "backtest_equity_curves.png", "Strategy Equity Curves", "Portfolio Value")
-    save_drawdown_chart(results["momentum_rotation"].equity, figures / "backtest_momentum_drawdown.png", "Momentum Strategy Drawdown")
+    save_dataframe(
+        pd.concat({name: result.borrow_costs for name, result in results.items()}, axis=1),
+        backtests / "backtest_borrow_costs.csv",
+    )
+    save_line_chart(
+        equity_frame,
+        figures / "backtest_equity_curves.png",
+        "Strategy Equity Curves",
+        "Portfolio Value",
+    )
+    save_drawdown_chart(
+        results["momentum_rotation"].equity,
+        figures / "backtest_momentum_drawdown.png",
+        "Momentum Strategy Drawdown",
+    )
     save_line_chart(
         returns_frame.rolling(63).mean() / returns_frame.rolling(63).std() * (252**0.5),
         figures / "backtest_rolling_sharpe.png",
         "Rolling 63-Day Sharpe Ratio",
         "Sharpe",
     )
-    save_line_chart(turnover_frame, figures / "backtest_turnover.png", "Daily Turnover", "Turnover / Equity")
-    save_line_chart(exposure_frame, figures / "backtest_exposure.png", "Gross Exposure", "Gross Exposure")
+    save_line_chart(
+        turnover_frame, figures / "backtest_turnover.png", "Daily Turnover", "Turnover / Equity"
+    )
+    save_line_chart(
+        exposure_frame, figures / "backtest_exposure.png", "Gross Exposure", "Gross Exposure"
+    )
     save_monthly_returns_heatmap(
         monthly_returns_table(results["momentum_rotation"].returns),
         figures / "backtest_monthly_returns_heatmap.png",

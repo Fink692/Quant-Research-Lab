@@ -65,7 +65,11 @@ def main() -> None:
         "Growth of $1",
     )
     save_drawdown_chart(port_equity, figures / "risk_portfolio_drawdown.png", "Portfolio Drawdown")
-    save_heatmap(returns[list(weights.index)].corr(), figures / "risk_correlation_heatmap.png", "Asset Return Correlation")
+    save_heatmap(
+        returns[list(weights.index)].corr(),
+        figures / "risk_correlation_heatmap.png",
+        "Asset Return Correlation",
+    )
     save_line_chart(
         rolling_volatility(port_returns).rename("Rolling Volatility"),
         figures / "risk_rolling_volatility.png",
@@ -90,8 +94,12 @@ def main() -> None:
         "Rolling Sharpe Ratio",
         "Sharpe",
     )
-    save_allocation_pie(weights / weights.sum(), figures / "risk_asset_allocation.png", "Strategic Asset Allocation")
-    save_risk_return_scatter(asset_summary, figures / "risk_return_scatter.png", "Asset Risk/Return Profile")
+    save_allocation_pie(
+        weights / weights.sum(), figures / "risk_asset_allocation.png", "Strategic Asset Allocation"
+    )
+    save_risk_return_scatter(
+        asset_summary, figures / "risk_return_scatter.png", "Asset Risk/Return Profile"
+    )
 
     summary_path = save_dataframe(summary, reports / "risk_performance_summary.csv")
     asset_path = save_dataframe(asset_summary, reports / "risk_asset_metrics.csv")

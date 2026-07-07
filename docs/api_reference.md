@@ -16,6 +16,19 @@
 - `rolling_volatility`, `rolling_beta`, `rolling_correlation`, `rolling_sharpe`: rolling risk diagnostics.
 - `drawdown_series`, `max_drawdown`: high-water-mark drawdown tools.
 - `historical_var`, `historical_cvar`, `gaussian_var`: value-at-risk models.
+- `ewma_volatility`, `ewma_correlation`: exponentially weighted risk diagnostics.
+- `estimate_factor_model`, `factor_portfolio_variance`: linear factor risk modeling.
+- `stress_test_table`, `tail_risk_report`: deterministic scenario and tail-risk reporting.
+
+## Portfolio Construction
+
+- `sample_covariance`: annualized sample covariance matrix.
+- `ledoit_wolf_covariance`: shrinkage covariance estimate.
+- `exponentially_weighted_covariance`: EWMA covariance estimate.
+- `min_variance_weights`: constrained minimum-variance optimizer.
+- `mean_variance_weights`: constrained mean-variance optimizer.
+- `risk_parity_weights`: equal-risk-contribution optimizer.
+- `portfolio_risk_contributions`: asset-level variance contribution diagnostics.
 
 ## Strategies
 
@@ -33,6 +46,7 @@
 - `label_regimes`: descriptive regime labels.
 - `transition_matrix`: one-step transition probabilities.
 - `asset_returns_by_regime`: monthly asset return comparison by regime.
+- `regime_allocation_table`: allocation estimates conditioned on regime history.
 
 ## Derivatives
 
@@ -46,8 +60,18 @@
 ## Backtesting
 
 - `TransactionCostModel`: commission and slippage bps model.
+- `FinancingModel`: cash interest, debit financing, and stock borrow model.
+- `Order`, `Fill`, `FillSimulator`: explicit execution research objects.
+- `PositionConstraints`, `apply_position_constraints`: target-weight constraint tools.
+- `rebalance_dates`: rebalance calendar helper.
 - `Portfolio`: cash and holdings state.
 - `BacktestEngine`: daily mark-to-market engine with signal lag and costs.
 - `calculate_performance_metrics`: institutional metric summary.
 - `monthly_returns_table`: monthly return heatmap input.
 - `strategy_comparison`: combined strategy metric table.
+- `walk_forward_splits`, `run_parameter_sweep`: strategy research workflow helpers.
+
+## Simulation
+
+- `simulate_portfolio_paths`: Monte Carlo multivariate-normal portfolio path simulation.
+- `monte_carlo_summary`: terminal wealth distribution summary.

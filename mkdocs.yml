@@ -1,0 +1,35 @@
+site_name: Quant Research Lab
+site_description: Institutional-style Python research framework for quant finance.
+site_url: https://fink692.github.io/Quant-Research-Lab/
+repo_url: https://github.com/Fink692/Quant-Research-Lab
+repo_name: Fink692/Quant-Research-Lab
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.suggest
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: blue
+
+nav:
+  - Home: index.md
+  - Getting Started: getting_started.md
+  - Architecture: architecture.md
+  - Example Outputs: examples.md
+  - Methodology: methodology.md
+  - Assumptions: assumptions.md
+  - Limitations: limitations.md
+  - API Reference: api_reference.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight

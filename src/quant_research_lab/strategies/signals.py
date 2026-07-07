@@ -18,7 +18,9 @@ def rolling_zscore(series: pd.Series, window: int) -> pd.Series:
     """Calculate rolling z-score without using future observations."""
     rolling_mean = series.rolling(window).mean()
     rolling_std = series.rolling(window).std()
-    return ((series - rolling_mean) / rolling_std).replace([np.inf, -np.inf], np.nan).rename("zscore")
+    return (
+        ((series - rolling_mean) / rolling_std).replace([np.inf, -np.inf], np.nan).rename("zscore")
+    )
 
 
 def threshold_positions(zscores: pd.Series, entry_z: float, exit_z: float) -> pd.Series:
@@ -34,9 +36,7 @@ def threshold_positions(zscores: pd.Series, entry_z: float, exit_z: float) -> pd
                 state = 1
             elif value >= abs(entry_z):
                 state = -1
-        elif state == 1 and value >= -abs(exit_z):
-            state = 0
-        elif state == -1 and value <= abs(exit_z):
+        elif state == 1 and value >= -abs(exit_z) or state == -1 and value <= abs(exit_z):
             state = 0
         positions.append(state)
     return pd.Series(positions, index=zscores.index, name="signal")

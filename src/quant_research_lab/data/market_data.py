@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterable
 from datetime import date
 from pathlib import Path
-from typing import Iterable
 
 import numpy as np
 import pandas as pd
@@ -112,12 +112,11 @@ def download_prices(
         return prices
 
 
-def calculate_returns(prices: pd.DataFrame | pd.Series, log: bool = False) -> pd.DataFrame | pd.Series:
+def calculate_returns(
+    prices: pd.DataFrame | pd.Series, log: bool = False
+) -> pd.DataFrame | pd.Series:
     """Calculate simple or log returns from a price series/DataFrame."""
-    if log:
-        returns = np.log(prices / prices.shift(1))
-    else:
-        returns = prices.pct_change()
+    returns = np.log(prices / prices.shift(1)) if log else prices.pct_change()
     return returns.replace([np.inf, -np.inf], np.nan).dropna(how="all")
 
 

@@ -17,7 +17,10 @@ import pandas as pd
 import seaborn as sns
 
 from quant_research_lab.data.market_data import download_prices
-from quant_research_lab.data.options_data import generate_synthetic_options_chain, load_options_chain
+from quant_research_lab.data.options_data import (
+    generate_synthetic_options_chain,
+    load_options_chain,
+)
 from quant_research_lab.derivatives.volatility_surface import (
     build_surface_grid,
     clean_options_chain,
@@ -26,7 +29,11 @@ from quant_research_lab.derivatives.volatility_surface import (
 )
 from quant_research_lab.utils.config import ensure_directories, load_yaml
 from quant_research_lab.utils.logging import log_path, setup_logging
-from quant_research_lab.visualization.charts import save_3d_surface, save_line_chart, save_options_smile
+from quant_research_lab.visualization.charts import (
+    save_3d_surface,
+    save_line_chart,
+    save_options_smile,
+)
 from quant_research_lab.visualization.reports import save_dataframe, write_markdown_report
 
 
@@ -56,8 +63,17 @@ def _save_price_comparison(options: pd.DataFrame, path: Path) -> Path:
 
 def _save_greeks_chart(options: pd.DataFrame, path: Path) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
-    atm = options.assign(atm_distance=(options["moneyness"] - 1).abs()).sort_values("atm_distance").head(80)
-    melted = atm.melt(id_vars=["moneyness"], value_vars=["delta", "gamma", "theta", "vega", "rho"], var_name="greek", value_name="value")
+    atm = (
+        options.assign(atm_distance=(options["moneyness"] - 1).abs())
+        .sort_values("atm_distance")
+        .head(80)
+    )
+    melted = atm.melt(
+        id_vars=["moneyness"],
+        value_vars=["delta", "gamma", "theta", "vega", "rho"],
+        var_name="greek",
+        value_name="value",
+    )
     fig, ax = plt.subplots(figsize=(12, 7))
     sns.lineplot(data=melted, x="moneyness", y="value", hue="greek", ax=ax)
     ax.set_title("Greeks Near At-The-Money")
@@ -83,7 +99,9 @@ def main() -> None:
         dividend_yield=float(cfg["dividend_yield"]),
         valuation_date=cfg.get("valuation_date"),
     )
-    using_synthetic = raw.get("contract_symbol", pd.Series(dtype=str)).astype(str).str.startswith("SYN").any()
+    using_synthetic = (
+        raw.get("contract_symbol", pd.Series(dtype=str)).astype(str).str.startswith("SYN").any()
+    )
     spot = fallback_spot if using_synthetic else _spot_from_market(ticker, fallback_spot)
     cleaned = clean_options_chain(
         raw,

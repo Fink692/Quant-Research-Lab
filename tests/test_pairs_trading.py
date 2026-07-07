@@ -31,7 +31,9 @@ def test_hedge_ratio_estimation() -> None:
 def test_pair_weights_are_dollar_normalized() -> None:
     prices = _synthetic_pair()
     hedge_ratio, _ = estimate_hedge_ratio(prices["Y"], prices["X"])
-    weights = generate_pair_weights(prices, "Y", "X", hedge_ratio, lookback=30, entry_z=1.0, exit_z=0.1)
+    weights = generate_pair_weights(
+        prices, "Y", "X", hedge_ratio, lookback=30, entry_z=1.0, exit_z=0.1
+    )
     assert set(weights.columns) == {"Y", "X"}
     assert weights.abs().sum(axis=1).max() <= 1.0000001
 
@@ -39,6 +41,8 @@ def test_pair_weights_are_dollar_normalized() -> None:
 def test_pair_backtest_outputs_expected_columns() -> None:
     prices = _synthetic_pair()
     hedge_ratio, intercept = estimate_hedge_ratio(prices["Y"], prices["X"])
-    result = backtest_pair_strategy(prices, "Y", "X", hedge_ratio, intercept, lookback=30, entry_z=1.0, exit_z=0.1)
+    result = backtest_pair_strategy(
+        prices, "Y", "X", hedge_ratio, intercept, lookback=30, entry_z=1.0, exit_z=0.1
+    )
     assert {"zscore", "signal", "strategy_returns", "equity", "drawdown"}.issubset(result.columns)
     assert result["equity"].iloc[-1] > 0

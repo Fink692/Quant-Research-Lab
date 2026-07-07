@@ -9,6 +9,10 @@ backtest:
   commission_bps: 1.0
   slippage_bps: 2.0
   minimum_fee: 0.0
+  cash_rate: 0.02
+  debit_rate: 0.055
+  short_borrow_rate: 0.01
+  max_single_position: 0.5
 
 strategies:
   buy_and_hold:

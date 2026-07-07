@@ -3,7 +3,11 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from quant_research_lab.macro.macro_features import build_macro_features, standardize_features, year_over_year
+from quant_research_lab.macro.macro_features import (
+    build_macro_features,
+    standardize_features,
+    year_over_year,
+)
 
 
 def _macro_frame() -> pd.DataFrame:
@@ -24,7 +28,9 @@ def _macro_frame() -> pd.DataFrame:
 
 
 def test_year_over_year_change() -> None:
-    series = pd.Series([100.0] * 12 + [110.0], index=pd.date_range("2020-01-01", periods=13, freq="MS"))
+    series = pd.Series(
+        [100.0] * 12 + [110.0], index=pd.date_range("2020-01-01", periods=13, freq="MS")
+    )
     assert np.isclose(year_over_year(series).iloc[-1], 10.0)
 
 

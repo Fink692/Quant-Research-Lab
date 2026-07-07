@@ -23,7 +23,11 @@ from quant_research_lab.strategies.pairs_trading import (
 )
 from quant_research_lab.utils.config import ensure_directories, load_yaml
 from quant_research_lab.utils.logging import log_path, setup_logging
-from quant_research_lab.visualization.charts import save_drawdown_chart, save_line_chart, save_zscore_chart
+from quant_research_lab.visualization.charts import (
+    save_drawdown_chart,
+    save_line_chart,
+    save_zscore_chart,
+)
 from quant_research_lab.visualization.reports import save_dataframe, write_markdown_report
 
 
@@ -35,9 +39,30 @@ def _save_trade_marker_chart(strategy, path: Path, entry_z: float) -> Path:
     long_entries = entries & strategy["signal"].eq(1)
     short_entries = entries & strategy["signal"].eq(-1)
     exits = entries & strategy["signal"].eq(0)
-    ax.scatter(strategy.index[long_entries], strategy.loc[long_entries, "spread"], color="#228b22", marker="^", s=70, label="Long spread")
-    ax.scatter(strategy.index[short_entries], strategy.loc[short_entries, "spread"], color="#b22222", marker="v", s=70, label="Short spread")
-    ax.scatter(strategy.index[exits], strategy.loc[exits, "spread"], color="#333333", marker="x", s=55, label="Exit")
+    ax.scatter(
+        strategy.index[long_entries],
+        strategy.loc[long_entries, "spread"],
+        color="#228b22",
+        marker="^",
+        s=70,
+        label="Long spread",
+    )
+    ax.scatter(
+        strategy.index[short_entries],
+        strategy.loc[short_entries, "spread"],
+        color="#b22222",
+        marker="v",
+        s=70,
+        label="Short spread",
+    )
+    ax.scatter(
+        strategy.index[exits],
+        strategy.loc[exits, "spread"],
+        color="#333333",
+        marker="x",
+        s=55,
+        label="Exit",
+    )
     ax.set_title(f"Spread Trade Markers (entry z={entry_z})")
     ax.legend()
     fig.tight_layout()
@@ -54,7 +79,9 @@ def main() -> None:
     prices = download_prices(cfg["universe"], start=cfg["start_date"], end=cfg.get("end_date"))
     ranked_pairs = find_cointegrated_pairs(prices)
     if ranked_pairs.empty:
-        logger.warning("No cointegrated pair found; falling back to first two tickers for demonstration.")
+        logger.warning(
+            "No cointegrated pair found; falling back to first two tickers for demonstration."
+        )
         y, x = cfg["universe"][:2]
         hedge_ratio, intercept = estimate_hedge_ratio(prices[y], prices[x])
         ranked_pairs = ranked_pairs._append(
@@ -87,15 +114,36 @@ def main() -> None:
     figures = ROOT / "outputs" / "figures"
     reports = ROOT / "outputs" / "reports"
     backtests = ROOT / "outputs" / "backtests"
-    save_dataframe(ranked_pairs.head(int(cfg["top_n_pairs"])), reports / "pairs_best_cointegrated_pairs.csv")
+    save_dataframe(
+        ranked_pairs.head(int(cfg["top_n_pairs"])), reports / "pairs_best_cointegrated_pairs.csv"
+    )
     save_dataframe(strategy, backtests / "pairs_strategy_timeseries.csv")
     perf_path = save_dataframe(perf, reports / "pairs_strategy_performance.csv")
-    save_line_chart(strategy[["y_price", "x_price"]], figures / "pairs_price_comparison.png", "Pair Price Comparison", "Price")
-    save_line_chart(strategy["spread"], figures / "pairs_spread.png", "Cointegration Spread", "Spread")
-    save_zscore_chart(strategy["zscore"], figures / "pairs_zscore_bands.png", float(cfg["entry_z"]), float(cfg["exit_z"]))
+    save_line_chart(
+        strategy[["y_price", "x_price"]],
+        figures / "pairs_price_comparison.png",
+        "Pair Price Comparison",
+        "Price",
+    )
+    save_line_chart(
+        strategy["spread"], figures / "pairs_spread.png", "Cointegration Spread", "Spread"
+    )
+    save_zscore_chart(
+        strategy["zscore"],
+        figures / "pairs_zscore_bands.png",
+        float(cfg["entry_z"]),
+        float(cfg["exit_z"]),
+    )
     _save_trade_marker_chart(strategy, figures / "pairs_trade_markers.png", float(cfg["entry_z"]))
-    save_line_chart(strategy["equity"], figures / "pairs_equity_curve.png", "Pairs Strategy Equity Curve", "Growth of $1")
-    save_drawdown_chart(strategy["equity"], figures / "pairs_drawdown.png", "Pairs Strategy Drawdown")
+    save_line_chart(
+        strategy["equity"],
+        figures / "pairs_equity_curve.png",
+        "Pairs Strategy Equity Curve",
+        "Growth of $1",
+    )
+    save_drawdown_chart(
+        strategy["equity"], figures / "pairs_drawdown.png", "Pairs Strategy Drawdown"
+    )
     report_path = write_markdown_report(
         "Pairs Trading Statistical Arbitrage Model",
         {

@@ -45,7 +45,9 @@ def calculate_performance_metrics(
         aligned = pd.concat([clean, benchmark_returns], axis=1).dropna()
         if not aligned.empty:
             metrics["beta"] = beta_to_benchmark(aligned.iloc[:, 0], aligned.iloc[:, 1])
-            metrics["alpha"] = alpha_to_benchmark(aligned.iloc[:, 0], aligned.iloc[:, 1], risk_free_rate)
+            metrics["alpha"] = alpha_to_benchmark(
+                aligned.iloc[:, 0], aligned.iloc[:, 1], risk_free_rate
+            )
     return pd.Series(metrics, name=returns.name or "strategy")
 
 
@@ -56,7 +58,20 @@ def monthly_returns_table(returns: pd.Series) -> pd.DataFrame:
     table["year"] = table.index.year
     table["month"] = table.index.strftime("%b")
     pivot = table.pivot(index="year", columns="month", values="return")
-    month_order = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    month_order = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ]
     return pivot.reindex(columns=month_order)
 
 

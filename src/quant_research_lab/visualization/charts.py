@@ -23,7 +23,9 @@ def _prepare_path(path: str | Path) -> Path:
     return output
 
 
-def save_line_chart(data: pd.Series | pd.DataFrame, path: str | Path, title: str, ylabel: str = "") -> Path:
+def save_line_chart(
+    data: pd.Series | pd.DataFrame, path: str | Path, title: str, ylabel: str = ""
+) -> Path:
     """Save a line chart."""
     output = _prepare_path(path)
     ax = data.plot(figsize=(12, 6), linewidth=1.8)
@@ -63,7 +65,9 @@ def save_heatmap(data: pd.DataFrame, path: str | Path, title: str, fmt: str = ".
     return output
 
 
-def save_allocation_pie(weights: pd.Series, path: str | Path, title: str = "Asset Allocation") -> Path:
+def save_allocation_pie(
+    weights: pd.Series, path: str | Path, title: str = "Asset Allocation"
+) -> Path:
     """Save an allocation pie chart."""
     output = _prepare_path(path)
     fig, ax = plt.subplots(figsize=(8, 8))
@@ -76,13 +80,20 @@ def save_allocation_pie(weights: pd.Series, path: str | Path, title: str = "Asse
     return output
 
 
-def save_risk_return_scatter(summary: pd.DataFrame, path: str | Path, title: str = "Risk/Return") -> Path:
+def save_risk_return_scatter(
+    summary: pd.DataFrame, path: str | Path, title: str = "Risk/Return"
+) -> Path:
     """Save annualized return versus volatility scatter plot."""
     output = _prepare_path(path)
     fig, ax = plt.subplots(figsize=(10, 7))
     ax.scatter(summary["annualized_volatility"], summary["annualized_return"], s=90)
     for label, row in summary.iterrows():
-        ax.annotate(label, (row["annualized_volatility"], row["annualized_return"]), xytext=(6, 6), textcoords="offset points")
+        ax.annotate(
+            label,
+            (row["annualized_volatility"], row["annualized_return"]),
+            xytext=(6, 6),
+            textcoords="offset points",
+        )
     ax.set_xlabel("Annualized Volatility")
     ax.set_ylabel("Annualized Return")
     ax.set_title(title)
@@ -119,7 +130,9 @@ def save_zscore_chart(
     return output
 
 
-def save_regime_timeline(regimes: pd.Series, path: str | Path, title: str = "Macro Regime Timeline") -> Path:
+def save_regime_timeline(
+    regimes: pd.Series, path: str | Path, title: str = "Macro Regime Timeline"
+) -> Path:
     """Save categorical regime history."""
     output = _prepare_path(path)
     codes = regimes.astype("category").cat.codes
@@ -154,7 +167,13 @@ def save_options_smile(options: pd.DataFrame, path: str | Path, option_type: str
     frame = options[options["option_type"].str.lower().str[0] == option_type.lower()[0]]
     fig, ax = plt.subplots(figsize=(12, 7))
     for expiry, group in frame.groupby("expiration"):
-        ax.plot(group["moneyness"], group["implied_volatility"], marker="o", linewidth=1.4, label=str(pd.Timestamp(expiry).date()))
+        ax.plot(
+            group["moneyness"],
+            group["implied_volatility"],
+            marker="o",
+            linewidth=1.4,
+            label=str(pd.Timestamp(expiry).date()),
+        )
     ax.set_title("Implied Volatility Smile")
     ax.set_xlabel("Strike / Spot")
     ax.set_ylabel("Implied Volatility")
@@ -165,7 +184,9 @@ def save_options_smile(options: pd.DataFrame, path: str | Path, option_type: str
     return output
 
 
-def save_3d_surface(xx, yy, zz, path: str | Path, title: str = "Implied Volatility Surface") -> Path:
+def save_3d_surface(
+    xx, yy, zz, path: str | Path, title: str = "Implied Volatility Surface"
+) -> Path:
     """Save a 3D implied volatility surface."""
     output = _prepare_path(path)
     fig = plt.figure(figsize=(11, 8))
