@@ -1,0 +1,30 @@
+portfolio:
+  name: Multi-Asset Core Portfolio
+  start_date: "2020-01-01"
+  end_date: null
+  benchmark: SPY
+  risk_free_rate: 0.02
+  assets:
+    SPY: 0.35
+    QQQ: 0.20
+    IEF: 0.15
+    GLD: 0.10
+    VNQ: 0.10
+    BTC-USD: 0.10
+
+pairs_trading:
+  start_date: "2020-01-01"
+  end_date: null
+  universe:
+    - MSFT
+    - AAPL
+    - GOOGL
+    - META
+    - AMZN
+    - ORCL
+    - IBM
+  entry_z: 2.0
+  exit_z: 0.25
+  lookback: 60
+  transaction_cost_bps: 2.0
+  top_n_pairs: 10

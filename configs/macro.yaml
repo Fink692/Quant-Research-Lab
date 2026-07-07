@@ -1,0 +1,21 @@
+macro:
+  start_date: "2005-01-01"
+  end_date: null
+  n_regimes: 4
+  pca_components: 2
+  random_state: 42
+  asset_universe:
+    - SPY
+    - QQQ
+    - IEF
+    - GLD
+    - HYG
+  fred_series:
+    cpi: CPIAUCSL
+    unemployment: UNRATE
+    fed_funds: FEDFUNDS
+    treasury_10y: DGS10
+    treasury_2y: DGS2
+    industrial_production: INDPRO
+    baa_yield: BAA
+    aaa_yield: AAA

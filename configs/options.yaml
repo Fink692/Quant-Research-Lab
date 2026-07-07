@@ -1,0 +1,12 @@
+options:
+  ticker: SPY
+  valuation_date: null
+  risk_free_rate: 0.04
+  dividend_yield: 0.015
+  max_expirations: 6
+  min_days_to_expiry: 7
+  max_days_to_expiry: 730
+  min_open_interest: 10
+  min_volume: 1
+  manual_csv_path: null
+  fallback_spot: 500.0

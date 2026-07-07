@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quant-research-lab"
+version = "0.1.0"
+description = "Institutional-style local research framework for portfolio risk, stat arb, macro regimes, volatility surfaces, and backtesting."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+  { name = "Quant Research Lab" }
+]
+license = { text = "MIT" }
+keywords = ["quant", "finance", "portfolio", "backtesting", "options", "risk"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Office/Business :: Financial :: Investment",
+  "Intended Audience :: Financial and Insurance Industry",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
