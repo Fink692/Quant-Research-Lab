@@ -42,7 +42,23 @@ Quant-Research-Lab/
 ```bash
 cd Quant-Research-Lab
 python -m venv .venv
-.venv\Scripts\activate
+```
+
+Activate the environment with the command for your operating system:
+
+```bash
+# macOS / Linux
+source .venv/bin/activate
+
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+```
+
+The package requires Python 3.11 or newer, and the CI workflow verifies Python 3.11 and 3.12.
+
+Install the runtime dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
 
@@ -67,7 +83,11 @@ mypy src --ignore-missing-imports
 Copy `.env.example` to `.env` if you have optional API keys:
 
 ```bash
-copy .env.example .env
+# macOS / Linux
+cp .env.example .env
+
+# Windows PowerShell
+Copy-Item .env.example .env
 ```
 
 FRED can be accessed through a public CSV endpoint without a key, but `FRED_API_KEY` is supported. Yahoo Finance access is handled through `yfinance`. If a provider fails or no key is present, the scripts use deterministic sample data and log the fallback.
