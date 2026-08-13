@@ -6,7 +6,6 @@
 git clone https://github.com/Fink692/Quant-Research-Lab.git
 cd Quant-Research-Lab
 python -m venv .venv
-.venv\Scripts\activate
 python -m pip install -r requirements-dev.txt
 python -m pip install -e .
 ```
@@ -16,6 +15,14 @@ On macOS or Linux:
 ```bash
 source .venv/bin/activate
 ```
+
+On Windows PowerShell:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+The package requires Python 3.11 or newer. Continuous integration verifies Python 3.11 and 3.12.
 
 ## Run The Research Workflows
 
@@ -53,7 +60,14 @@ mypy src --ignore-missing-imports
 Copy `.env.example` to `.env` if you have optional credentials.
 
 ```bash
-copy .env.example .env
+# macOS / Linux
+cp .env.example .env
+```
+
+On Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
 ```
 
 The project runs without keys by using public endpoints or deterministic fallback data where needed.
